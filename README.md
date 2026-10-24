@@ -1,5 +1,6 @@
 # Zerodha Clone — MERN Paper-Trading Platform
 Live link:https://zerodha-clone-f098.onrender.com
+
 A full-stack stock-trading **simulator** inspired by Zerodha's Kite:
 
 - **Landing site** (`frontend/`): marketing pages plus signup and login.
