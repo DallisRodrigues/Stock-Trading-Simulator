@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Lint, unit/integration tests and builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+            dashboard/package-lock.json
+      - name: Install
+        run: |
+          npm ci
+          npm --prefix backend ci
+          npm --prefix frontend ci
+          npm --prefix dashboard ci
+      - name: Lint
+        run: npm run lint
+      - name: Backend tests
+        run: npm --prefix backend test
+      - name: Dashboard tests
+        run: npm --prefix dashboard test
+      - name: Build
+        run: npm run build && npm run build:single
+
+  e2e:
+    name: End-to-end (Playwright, Chromium)
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
+            dashboard/package-lock.json
+      - name: Install
+        run: |
+          npm ci
+          npm --prefix backend ci
+          npm --prefix frontend ci
+          npm --prefix dashboard ci
+          npx playwright install --with-deps chromium
+      - name: Run Playwright
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+  docker:
+    name: Docker image builds
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t zerodha-clone:ci .

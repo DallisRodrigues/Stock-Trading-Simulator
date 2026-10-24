@@ -1,0 +1,45 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.order-table td,
+.item-info,
+.kpi h3,
+.stat strong,
+.index-points,
+.movers li,
+.heatmap-tile {
+  font-variant-numeric: tabular-nums;
+}

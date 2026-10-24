@@ -1,0 +1,36 @@
+name: zerodha-clone
+
+services:
+  app:
+    build: .
+    image: zerodha-clone:latest
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3002}:3002"
+    env_file:
+      - path: backend/.env
+        required: false
+    environment:
+      NODE_ENV: production
+      SERVE_STATIC: "on"
+      MONGODB_URI: ${COMPOSE_MONGODB_URI:-mongodb://mongo:27017}
+      MONGODB_DB_NAME: ${COMPOSE_MONGODB_DB_NAME:-zerodha_clone}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  mongo-data:

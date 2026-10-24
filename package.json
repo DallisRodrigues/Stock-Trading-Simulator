@@ -1,0 +1,26 @@
+{
+  "name": "zerodha-clone",
+  "private": true,
+  "description": "MERN paper-trading platform: landing site, trading dashboard and Express/MongoDB API with Finnhub market data",
+  "scripts": {
+    "install:all": "npm install && npm --prefix backend install && npm --prefix frontend install && npm --prefix dashboard install",
+    "dev": "concurrently -n api,web,dash -c blue,green,magenta \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\" \"npm --prefix dashboard run dev\"",
+    "dev:local": "concurrently -n api,web,dash -c blue,green,magenta \"npm --prefix backend run dev:local\" \"npm --prefix frontend run dev\" \"npm --prefix dashboard run dev\"",
+    "build": "npm --prefix frontend run build && npm --prefix dashboard run build",
+    "lint": "npm --prefix frontend run lint && npm --prefix dashboard run lint",
+    "test": "npm --prefix backend test && npm --prefix dashboard test",
+    "test:e2e": "playwright test",
+    "check:finnhub": "npm --prefix backend run check:finnhub",
+    "build:single": "cross-env VITE_API_URL= VITE_DASHBOARD_URL=/app npm --prefix frontend run build && cross-env VITE_API_URL= VITE_LANDING_URL= VITE_BASE_PATH=/app/ npm --prefix dashboard run build",
+    "start": "npm --prefix backend start",
+    "start:single": "cross-env SERVE_STATIC=on npm --prefix backend start"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "concurrently": "^10.0.6",
+    "cross-env": "^10.1.0"
+  }
+}

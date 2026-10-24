@@ -1,0 +1,16 @@
+**/node_modules
+**/dist
+**/dist-e2e
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+backend/.mongo-data
+backend/test
+e2e
+test-results
+playwright-report
+.git
+.github
+.claude
+*.md
